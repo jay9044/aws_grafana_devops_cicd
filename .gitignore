@@ -1,0 +1,12 @@
+**/.terraform/*
+.terraform/*
+
+*.tfstate
+*.tfstate.*
+
+*.tfvars
+variables.tf
+
+# Ignore CLI configuration files
+.terraformrc
+terraform.rc
