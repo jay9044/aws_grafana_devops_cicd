@@ -47,16 +47,19 @@ resource "aws_default_route_table" "tfa_private_rtb" {
   }
 }
 
+
+//using count to accommodate Dry principles
 resource "aws_subnet" "tfa_public_subnet" {
+  count      = length(var.public_cidrs)
   vpc_id     = aws_vpc.tfa_vpc.id
-  cidr_block = var.public_cidrs
+  cidr_block = var.public_cidrs[count.index]
 
-
-//Specify true to indicate that instances launched into the subnet should be assigned a public IP address.
+  //Specify true to indicate that instances launched into the subnet should be assigned a public IP address.
   map_public_ip_on_launch = true
-  availability_zone = data.aws_availability_zones.az_zones.names[0]
+
+  availability_zone = data.aws_availability_zones.az_zones.names[count.index]
 
   tags = {
-    Name = "tfa_public_subnet"
+    Name = "tfa_public_subnet-${count.index + 1}" //so tags start at 1 for readability
   }
 }
