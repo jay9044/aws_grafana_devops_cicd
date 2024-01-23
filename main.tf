@@ -43,6 +43,8 @@ resource "aws_route_table" "tfa_public_rtb" {
   }
 }
 
+
+//default vpc route table is being used a private rtb // implicit association to private rtb
 resource "aws_default_route_table" "tfa_private_rtb" {
   default_route_table_id = aws_vpc.tfa_vpc.default_route_table_id
 
@@ -53,8 +55,8 @@ resource "aws_default_route_table" "tfa_private_rtb" {
 
 //using count to accommodate Dry principles
 resource "aws_subnet" "tfa_public_subnet" {
-  count      = length(local.azs)
-  vpc_id     = aws_vpc.tfa_vpc.id
+  count             = length(local.azs)
+  vpc_id            = aws_vpc.tfa_vpc.id
   availability_zone = local.azs[count.index]
 
   //last bit will start with a 0 due to count index
@@ -79,4 +81,11 @@ resource "aws_subnet" "tfa_private_subnet" {
   tags = {
     Name = "tfa_private_subnet-${count.index + 1}"
   }
+}
+
+resource "aws_route_table_association" "tfa_public_rtb_assoc" {
+  count          = length(local.azs)
+  route_table_id = aws_route_table.tfa_public_rtb.id
+  subnet_id      = aws_subnet.tfa_public_subnet[count.index].id
+  gateway_id     = aws_internet_gateway.tfa_igw.id
 }
