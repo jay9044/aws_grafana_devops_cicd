@@ -43,7 +43,6 @@ resource "aws_route_table" "tfa_public_rtb" {
   }
 }
 
-
 //default vpc route table is being used a private rtb // implicit association to private rtb
 resource "aws_default_route_table" "tfa_private_rtb" {
   default_route_table_id = aws_vpc.tfa_vpc.default_route_table_id
@@ -87,5 +86,36 @@ resource "aws_route_table_association" "tfa_public_rtb_assoc" {
   count          = length(local.azs)
   route_table_id = aws_route_table.tfa_public_rtb.id
   subnet_id      = aws_subnet.tfa_public_subnet[count.index].id
-  gateway_id     = aws_internet_gateway.tfa_igw.id
+}
+
+resource "aws_security_group" "tfa_sg" {
+  name        = "tfa_sg"
+  description = "tfa_public_sg"
+  vpc_id      = aws_vpc.tfa_vpc.id
+
+  ingress {
+    description = "All ingress"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1" //all protocols
+    cidr_blocks = [var.my_ip]
+  }
+
+  egress {
+    description = "All egress"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+
+  }
+
+  tags = {
+    Name = "tfa-sg"
+  }
+}
+
+resource "aws_key_pair" "tfa_ssh_key" {
+  key_name   = "tfa_ssh_key"
+  public_key = file(var.ssh_pub_key_path)
 }
