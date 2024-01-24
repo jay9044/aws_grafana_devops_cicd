@@ -114,8 +114,3 @@ resource "aws_security_group" "tfa_sg" {
     Name = "tfa-sg"
   }
 }
-
-resource "aws_key_pair" "tfa_ssh_key" {
-  key_name   = "tfa_ssh_key"
-  public_key = file(var.ssh_pub_key_path)
-}
