@@ -6,10 +6,14 @@ output "ec2_ami" {
   value = data.aws_ami.ec2_ami
 }
 
-output "aws_instance" {
+output "ec2_keyname" {
   value = aws_key_pair.tfa_ssh_key.key_name
 }
 
-output "aws_instance_pub_ip" {
-  value = aws_instance.tfa_pub_server[0].public_ip
+output "ec2_pub_ips" {
+  value = aws_instance.tfa_pub_server[*].public_ip
+}
+
+output "ec2_pub_ips_with_tag" {
+  value = [for instance in aws_instance.tfa_pub_server : "${instance.tags.Name} - ${instance.public_ip}"]
 }

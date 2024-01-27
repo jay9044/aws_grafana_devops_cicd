@@ -27,10 +27,24 @@ resource "aws_instance" "tfa_pub_server" {
     volume_size = var.vol_size
   }
 
-// the file function only accepts one functions, so cant use .sh to pass args
-  user_data = templatefile("./entry_script.tpl", {new_hostname = "tfa_pub_server-${count.index + 1}"})
+  // the file function only accepts one functions, so cant use .sh to pass args
+  user_data = templatefile("./entry_script.tpl", { new_hostname = "tfa_pub_server-${count.index + 1}" })
 
   tags = {
     Name = "tfa_pub_server-${count.index + 1}"
   }
+
+  provisioner "local-exec" {
+    command = "printf '\n${self.tags.Name} - ${self.public_ip}' >> aws_hosts"
+  }
+}
+//Trying to avoid using local provisioner
+resource "local_file" "server_ips" {
+  filename = "instance_ips.txt"
+  content  = join("\n", aws_instance.tfa_pub_server[*].public_ip)
+}
+
+resource "local_file" "server_ipsv2" {
+  filename = "instance_ips_v2.txt"
+  content  = join("\n", [for instance in aws_instance.tfa_pub_server : "${instance.tags.Name} - ${instance.public_ip}"])
 }

@@ -10,3 +10,5 @@ variables.tf
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
+
+aws_hosts
