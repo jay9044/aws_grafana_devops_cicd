@@ -8,4 +8,5 @@ sudo apt-get -y install grafana &&
 sudo systemctl start grafana-server &&
 sudo systemctl enable grafana-server.service
 
-# the file function only accepts one functions, so cant use .sh
+# the file function only accepts one argument, so cant use .sh
+# remember to use tf taint if only user data needs updating/tweaking
