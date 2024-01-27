@@ -27,6 +27,9 @@ resource "aws_instance" "tfa_pub_server" {
     volume_size = var.vol_size
   }
 
+// the file function only accepts one functions, so cant use .sh to pass args
+  user_data = templatefile("./entry_script.tpl", {new_hostname = "tfa_pub_server-${count.index + 1}"})
+
   tags = {
     Name = "tfa_pub_server-${count.index + 1}"
   }
