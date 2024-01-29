@@ -33,15 +33,13 @@ resource "aws_instance" "tfa_pub_server" {
   tags = {
     Name = "tfa_pub_server-${count.index + 1}"
   }
-
-  provisioner "local-exec" {
-    command = "printf '\n${self.tags.Name} - ${self.public_ip}' >> aws_hosts"
-  }
 }
+
 //Trying to avoid using local provisioner
 resource "local_file" "server_ips" {
   filename = "instance_ips.txt"
-  content  = join("\n", aws_instance.tfa_pub_server[*].public_ip)
+  content  = join("\n", aws_instance.tfa_pub_server[*].tags.Name - aws_instance.tfa_pub_server[*].public_ip) //using widlcard since count is mentioned outside of this resource
+
 }
 
 resource "local_file" "server_ipsv2" {
