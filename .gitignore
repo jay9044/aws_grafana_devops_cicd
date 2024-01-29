@@ -11,4 +11,4 @@ variables.tf
 .terraformrc
 terraform.rc
 
-aws_hosts
+.vscode

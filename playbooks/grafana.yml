@@ -1,0 +1,12 @@
+---
+- name: Install Grafana
+  hosts: hosts
+  become: yes
+
+  # testing locally first
+  # already install pre-reqs when installing ansible
+  tasks:
+  - name: download apt key
+  - name: Add Grafana repo to sources list
+  - name: Update apt cahce and install Grafana
+  - name: Start and enable Grafana service
