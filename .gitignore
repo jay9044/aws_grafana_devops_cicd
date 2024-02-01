@@ -1,3 +1,4 @@
+#Terraform
 **/.terraform/*
 .terraform/*
 
@@ -7,8 +8,13 @@
 *.tfvars
 variables.tf
 
-# Ignore CLI configuration files
+## Ignore CLI configuration files
 .terraformrc
 terraform.rc
 
-aws_hosts
+#vscode settings
+.vscode
+
+#ansible
+ansible.cfg
+playbooks/variables.yaml
