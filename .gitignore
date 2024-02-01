@@ -17,4 +17,4 @@ terraform.rc
 
 #ansible
 ansible.cfg
-playbooks/variables
+playbooks/variables.yaml
