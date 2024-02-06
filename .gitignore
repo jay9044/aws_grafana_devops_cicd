@@ -17,4 +17,5 @@ terraform.rc
 
 #ansible
 ansible.cfg
+aws_instance_ips.ini
 playbooks/variables.yaml

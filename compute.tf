@@ -28,15 +28,26 @@ resource "aws_instance" "tfa_pub_server" {
   }
 
   // the file function only accepts one functions, so cant use .sh to pass args
-  user_data = templatefile("./entry_script.tpl", { new_hostname = "tfa_pub_server-${count.index + 1}" })
+  // utilising ansible for this instead
+  ///user_data = templatefile("./entry_script.tpl", { new_hostname = "tfa_pub_server-${count.index + 1}" })
 
   tags = {
     Name = "tfa_pub_server-${count.index + 1}"
   }
 }
 
+//To avoid using provisioners
 resource "local_file" "server_ipsv2" {
-  filename = "aws_instance_ips.ini"
-  content  = join("\n", concat(["[web_servers]"], [for instance in aws_instance.tfa_pub_server : "${instance.tags.Name} ansible_host=${instance.public_ip}"]))
+  depends_on = [aws_instance.tfa_pub_server]
+  filename   = "aws_instance_ips.ini"
+  content    = join("\n", concat(["[web_servers]"], [for instance in aws_instance.tfa_pub_server[*] : "${instance.tags.Name} ansible_host=${instance.public_ip}"]))
 }
 
+
+//Debating whether to ssh via ansible to seperate concerns and avoid provisioners
+resource "null_resource" "grafana_install" {
+  depends_on = [local_file.server_ipsv2]
+  provisioner "local-exec" {
+    command = "ansible-playbook -i aws_instance_ips.ini --user ubuntu --key-file ${var.ssh_priv_key_path} playbooks/grafana.yml"
+  }
+}

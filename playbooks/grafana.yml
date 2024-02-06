@@ -1,10 +1,11 @@
 ---
 - name: Install Grafana
-  hosts: hosts
+  hosts: all
   become: yes
 
   # testing locally first
   # already install pre-reqs when installing ansible
+  # todo - change hosts to web_servers
   tasks:
   - debug: 
       var: ansible_facts 
