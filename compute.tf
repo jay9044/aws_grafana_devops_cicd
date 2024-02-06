@@ -35,14 +35,8 @@ resource "aws_instance" "tfa_pub_server" {
   }
 }
 
-//Trying to avoid using local provisioner
-resource "local_file" "server_ips" {
-  filename = "instance_ips.txt"
-  content  = join("\n", aws_instance.tfa_pub_server[*].tags.Name - aws_instance.tfa_pub_server[*].public_ip) //using widlcard since count is mentioned outside of this resource
-
-}
-
 resource "local_file" "server_ipsv2" {
-  filename = "instance_ips_v2.txt"
-  content  = join("\n", [for instance in aws_instance.tfa_pub_server : "${instance.tags.Name} - ${instance.public_ip}"])
+  filename = "aws_instance_ips.ini"
+  content  = join("\n", concat(["[web_servers]"], [for instance in aws_instance.tfa_pub_server : "${instance.tags.Name} ansible_host=${instance.public_ip}"]))
 }
+
