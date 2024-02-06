@@ -19,6 +19,7 @@
       repo: deb https://packages.grafana.com/oss/deb stable main
       state: present
       filename: grafana
+      
   - name: Update apt cahce and install Grafana
     ansible.builtin.apt:
       update_cache: yes
