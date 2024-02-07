@@ -1,5 +1,5 @@
 ---
-- name: Remove Grafana
+- name: Remove Bootstrap
   hosts: hosts
   become: yes
 

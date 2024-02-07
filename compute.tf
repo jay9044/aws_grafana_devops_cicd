@@ -45,9 +45,9 @@ resource "local_file" "server_ipsv2" {
 
 
 //Debating whether to ssh via ansible to seperate concerns and avoid provisioners
-resource "null_resource" "grafana_install" {
+resource "null_resource" "delay_and_grafana_install" {
   depends_on = [local_file.server_ipsv2]
   provisioner "local-exec" {
-    command = "ansible-playbook -i aws_instance_ips.ini --user ubuntu --key-file ${var.ssh_priv_key_path} playbooks/grafana.yml"
+    command = "sleep 80 && ansible-playbook -i aws_instance_ips.ini --user ubuntu --key-file ${var.ssh_priv_key_path} playbooks/grafana.yml"
   }
 }
